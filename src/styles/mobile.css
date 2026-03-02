@@ -1,0 +1,70 @@
+@media (max-width: 768px) {
+  /* Top bar compact */
+  #top-bar { height: 40px; padding: 0 14px; }
+  #top-bar h1 { font-size: 13px; }
+
+  /* Panel en bottom sheet */
+  #detail-panel {
+    top: auto !important;
+    bottom: -100%;
+    right: 0 !important;
+    left: 0;
+    width: 100% !important;
+    height: auto;
+    max-height: 65vh;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    transition: bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #detail-panel.open {
+    bottom: 0;
+    right: 0 !important;
+  }
+  /* Drag handle */
+  #detail-panel::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 4px;
+    background: var(--text-muted);
+    border-radius: 2px;
+    margin: 0 auto 16px;
+  }
+
+  /* Legende collapsable */
+  #legend {
+    bottom: 12px;
+    left: 12px;
+    max-height: 48px;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  #legend.expanded { max-height: 300px; }
+  #legend-toggle {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 4px 0;
+    border: none;
+    background: none;
+    color: var(--text-primary);
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* Labels plus petits */
+  .district-label { font-size: 9px; }
+
+  /* Touch friendly */
+  .layer-toggle { padding: 10px 14px; min-height: 44px; }
+  .legend-item { padding: 8px 10px; min-height: 40px; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,78 @@
+#detail-panel {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 380px;
+  height: 100%;
+  background: var(--bg-card, #1e2a3a);
+  color: var(--text-primary, #e0e0e0);
+  padding: 24px;
+  overflow-y: auto;
+  transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1000;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+#detail-panel.open { right: 0; }
+#detail-panel::-webkit-scrollbar { width: 6px; }
+#detail-panel::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 3px; }
+
+#panel-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #e0e0e0;
+  font-size: 22px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+#panel-close:hover { background: rgba(255, 255, 255, 0.2); }
+
+.panel-header h2 { margin: 0 0 4px; font-size: 22px; font-weight: 700; }
+.panel-thai { font-size: 14px; opacity: 0.6; }
+.panel-rating { margin-top: 8px; font-size: 16px; letter-spacing: 1px; }
+.panel-rating span { font-size: 13px; opacity: 0.8; margin-left: 6px; }
+.panel-desc { font-size: 14px; line-height: 1.6; opacity: 0.85; margin: 16px 0; }
+
+.panel-price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+.price-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; }
+.price-value { font-size: 18px; font-weight: 700; }
+
+.panel-section { margin-bottom: 18px; }
+.panel-section h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.5; margin: 0 0 10px; }
+.pro-item, .con-item, .activity-item { font-size: 14px; padding: 4px 0; }
+.icon-pro { color: #2ecc71; margin-right: 6px; }
+.icon-con { color: #e74c3c; margin-right: 6px; }
+.activity-item { opacity: 0.85; }
+
+.panel-bestfor {
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.panel-item {
+  opacity: 0;
+  animation: panelSlideIn 0.4s ease forwards;
+}
+@keyframes panelSlideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
