@@ -1,4 +1,6 @@
 import type { District } from '../types'
+import { findNearestStation } from '../utils/geo'
+import { transitLines } from '../data/transit-lines'
 
 let panel: HTMLDivElement
 
@@ -11,13 +13,17 @@ function stars(rating: number): string {
 export function initPanel() {
   panel = document.createElement('div')
   panel.id = 'detail-panel'
-  panel.innerHTML = '<button id="panel-close">&times;</button><div id="panel-content"></div>'
+  panel.setAttribute('role', 'complementary')
+  panel.setAttribute('aria-label', 'Détails du quartier')
+  panel.innerHTML = '<button id="panel-close" aria-label="Fermer le panneau">&times;</button><div id="panel-content"></div>'
   document.body.appendChild(panel)
   panel.querySelector('#panel-close')!.addEventListener('click', hidePanel)
 }
 
 export function showPanel(d: District) {
   const content = panel.querySelector('#panel-content')!
+  const nearest = findNearestStation(d.center, transitLines)
+
   content.innerHTML = `
     <div class="panel-header">
       <h2>${d.name}</h2>
@@ -28,6 +34,11 @@ export function showPanel(d: District) {
     <div class="panel-price" style="background:linear-gradient(135deg,${d.color}33,${d.color}11)">
       <span class="price-label">Budget</span><span class="price-value">${d.priceRange}</span>
     </div>
+    ${nearest ? `
+    <div class="panel-nearest panel-item" style="animation-delay:0.05s">
+      <span class="station-badge station-${nearest.type}">${nearest.type.toUpperCase()}</span>
+      <span class="station-info">${nearest.name} — ${nearest.distance}m</span>
+    </div>` : ''}
     <div class="panel-section panel-item" style="animation-delay:0.1s">
       <h3>Avantages</h3>
       ${d.pros.map(p => `<div class="pro-item"><span class="icon-pro">&#10003;</span> ${p}</div>`).join('')}
@@ -43,6 +54,7 @@ export function showPanel(d: District) {
     <div class="panel-bestfor panel-item" style="animation-delay:0.4s;border-left:3px solid ${d.color}">
       <strong>Idéal pour :</strong> ${d.bestFor}
     </div>
+    ${d.tags.length ? `<div class="panel-tags panel-item" style="animation-delay:0.45s">${d.tags.map(t => `<span class="panel-tag">${t}</span>`).join('')}</div>` : ''}
   `
   panel.classList.add('open')
 }

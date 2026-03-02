@@ -1,8 +1,6 @@
-/* District polygons */
 .leaflet-interactive { cursor: pointer !important; }
 .leaflet-overlay-pane svg { filter: drop-shadow(0 0 8px rgba(0,0,0,0.3)); }
 
-/* District labels */
 .district-label {
   font-family: var(--font);
   font-size: 11px;
@@ -15,7 +13,6 @@
   transition: opacity 0.3s;
 }
 
-/* Leaflet tooltip custom */
 .leaflet-tooltip {
   background: rgba(22, 33, 62, 0.95) !important;
   backdrop-filter: blur(8px);
@@ -30,52 +27,84 @@
 .leaflet-tooltip-top:before { border-top-color: rgba(22,33,62,0.95) !important; }
 .leaflet-tooltip-bottom:before { border-bottom-color: rgba(22,33,62,0.95) !important; }
 
-/* Toggle controls */
-.layer-controls {
-  background: rgba(22, 33, 62, 0.9);
-  backdrop-filter: blur(10px);
-  border-radius: var(--radius-md);
-  padding: 6px;
+/* Controls */
+.map-controls {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  background: rgba(22,33,62,0.9);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-md);
+  padding: 6px;
   border: 1px solid rgba(255,255,255,0.08);
 }
 
-.layer-toggle {
+.controls-group { display: flex; flex-direction: column; gap: 4px; }
+.controls-sep { height: 1px; background: rgba(255,255,255,0.08); margin: 2px 0; }
+
+.control-btn {
+  width: 34px;
+  height: 34px;
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-sm);
+  background: rgba(30,30,40,0.85);
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  font-family: var(--font);
-  font-size: 12px;
-  cursor: pointer;
-  border-radius: var(--radius-sm);
+  justify-content: center;
+  padding: 0;
+  backdrop-filter: blur(8px);
   transition: all 0.2s;
-  white-space: nowrap;
+  opacity: 0.5;
+  position: relative;
 }
-.layer-toggle:hover { background: var(--bg-hover); color: var(--text-primary); }
-.layer-toggle.active { background: rgba(79, 195, 247, 0.1); color: var(--accent); }
+.control-btn:hover { opacity: 0.8; border-color: rgba(255,255,255,0.3); }
+.control-btn.active { opacity: 1; border-color: var(--accent); }
+
+.control-compare { font-size: 14px; }
+.compare-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  background: var(--accent);
+  color: var(--bg-primary);
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 8px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+}
+.compare-badge.visible { display: flex; }
+
+/* POI markers */
+.poi-marker { background: none !important; border: none !important; }
+.poi-icon {
+  font-size: 20px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.poi-icon:hover { transform: scale(1.3); }
 
 /* Keyframes */
 @keyframes pulse {
   0%, 100% { stroke-opacity: 0.8; }
   50% { stroke-opacity: 0.4; }
 }
-
 @keyframes slideIn {
   from { opacity: 0; transform: translateX(20px); }
   to { opacity: 1; transform: translateX(0); }
 }
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
 @keyframes staggerIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }

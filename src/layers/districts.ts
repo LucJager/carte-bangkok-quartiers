@@ -3,9 +3,10 @@ import { districts } from '../data/districts'
 import { showPanel } from '../ui/panel'
 
 let selectedId: string | null = null
+let filteredIds: string[] | null = null
 const polygonMap = new Map<string, { shadow: L.Polygon, main: L.Polygon }>()
 
-export function initDistrictsLayer(map: L.Map, onSelect?: (id: string) => void) {
+export function initDistrictsLayer(map: L.Map, onSelect?: (id: string) => void, onShiftClick?: (id: string) => void) {
   const layer = L.layerGroup()
 
   districts.forEach(d => {
@@ -27,11 +28,18 @@ export function initDistrictsLayer(map: L.Map, onSelect?: (id: string) => void) 
 
     main.on('mouseout', () => {
       if (selectedId === d.id) return
+      const dimmed = filteredIds && !filteredIds.includes(d.id)
       shadow.setStyle({ opacity: 0.15 })
-      main.setStyle({ weight: 2, fillOpacity: selectedId ? 0.08 : 0.2 })
+      main.setStyle({ weight: 2, fillOpacity: dimmed ? 0.05 : (selectedId ? 0.08 : 0.2) })
     })
 
-    main.on('click', () => select(d.id))
+    main.on('click', (e) => {
+      if ((e.originalEvent as MouseEvent).shiftKey) {
+        onShiftClick?.(d.id)
+      } else {
+        select(d.id)
+      }
+    })
 
     L.marker(d.center, {
       icon: L.divIcon({
@@ -65,11 +73,39 @@ export function initDistrictsLayer(map: L.Map, onSelect?: (id: string) => void) 
 
   function deselect() {
     selectedId = null
-    polygonMap.forEach(({ shadow, main }) => {
-      shadow.setStyle({ opacity: 0.15 })
-      main.setStyle({ weight: 2, fillOpacity: 0.2 })
+    applyFilter()
+  }
+
+  function highlightFiltered(ids: string[] | null) {
+    filteredIds = ids
+    if (selectedId) return
+    applyFilter()
+  }
+
+  function applyFilter() {
+    polygonMap.forEach(({ shadow, main }, pid) => {
+      if (filteredIds && !filteredIds.includes(pid)) {
+        shadow.setStyle({ opacity: 0.05 })
+        main.setStyle({ weight: 1, fillOpacity: 0.05 })
+      } else {
+        shadow.setStyle({ opacity: 0.15 })
+        main.setStyle({ weight: 2, fillOpacity: 0.2 })
+      }
     })
   }
 
-  return { layer, select, deselect }
+  function selectMulti(ids: string[]) {
+    selectedId = null
+    polygonMap.forEach(({ shadow, main }, pid) => {
+      if (ids.includes(pid)) {
+        shadow.setStyle({ opacity: 0.3 })
+        main.setStyle({ weight: 3, fillOpacity: 0.3 })
+      } else {
+        shadow.setStyle({ opacity: 0.08 })
+        main.setStyle({ weight: 1, fillOpacity: 0.06 })
+      }
+    })
+  }
+
+  return { layer, select, deselect, highlightFiltered, selectMulti }
 }

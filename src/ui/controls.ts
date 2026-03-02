@@ -1,62 +1,87 @@
 import L from 'leaflet'
+import type { PoiCategory } from '../types'
+import { poiEmojis, poiLabels } from '../data/pois'
 
-export function initControls(
-  map: L.Map,
-  transitLayer: L.LayerGroup,
-  riverLayer: L.LayerGroup,
-): void {
+interface ControlsConfig {
+  map: L.Map
+  transitLayer: L.LayerGroup
+  riverLayer: L.LayerGroup
+  poiToggle: (cat: string, show: boolean) => void
+  poiCategories: PoiCategory[]
+  onCompare: () => void
+  compareCount: () => number
+}
+
+export function initControls(config: ControlsConfig) {
+  const { map, transitLayer, riverLayer, poiToggle, poiCategories, onCompare, compareCount } = config
+
   const Control = L.Control.extend({
     onAdd() {
       const container = L.DomUtil.create('div', 'map-controls')
-      container.innerHTML = `
-        <button class="control-btn active" data-layer="transit" title="Transit">🚆</button>
-        <button class="control-btn active" data-layer="river" title="Fleuve">🌊</button>
+
+      const layerBtns = `
+        <button class="control-btn active" data-layer="transit" title="Transit" aria-pressed="true">🚆</button>
+        <button class="control-btn active" data-layer="river" title="Fleuve" aria-pressed="true">🌊</button>
       `
-      Object.assign(container.style, {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '4px',
-      })
-      container.querySelectorAll<HTMLButtonElement>('.control-btn').forEach(btn => {
-        Object.assign(btn.style, {
-          width: '34px',
-          height: '34px',
-          border: '2px solid rgba(255,255,255,0.2)',
-          borderRadius: '6px',
-          background: 'rgba(30,30,40,0.85)',
-          color: '#fff',
-          fontSize: '16px',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '0',
-          backdropFilter: 'blur(8px)',
-          transition: 'all 0.2s',
-        })
-      })
-      const layers: Record<string, L.LayerGroup> = { transit: transitLayer, river: riverLayer }
+      const poiBtns = poiCategories.map(cat =>
+        `<button class="control-btn control-poi" data-poi="${cat}" title="${poiLabels[cat]}" aria-pressed="false">${poiEmojis[cat]}</button>`
+      ).join('')
+
+      container.innerHTML = `
+        <div class="controls-group">${layerBtns}</div>
+        <div class="controls-sep"></div>
+        <div class="controls-group controls-poi-group">${poiBtns}</div>
+        <div class="controls-sep"></div>
+        <button class="control-btn control-compare" id="btn-compare" title="Comparer" aria-label="Comparer les quartiers">
+          ⚖️<span class="compare-badge" id="compare-badge">0</span>
+        </button>
+      `
+
       L.DomEvent.disableClickPropagation(container)
+
+      const layers: Record<string, L.LayerGroup> = { transit: transitLayer, river: riverLayer }
+
       container.addEventListener('click', e => {
         const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.control-btn')
         if (!btn) return
-        const layer = layers[btn.dataset.layer!]
-        if (!layer) return
-        const active = map.hasLayer(layer)
-        if (active) {
-          map.removeLayer(layer)
-          btn.classList.remove('active')
-          btn.style.opacity = '0.4'
-          btn.style.borderColor = 'rgba(255,255,255,0.1)'
-        } else {
-          layer.addTo(map)
-          btn.classList.add('active')
-          btn.style.opacity = '1'
-          btn.style.borderColor = 'rgba(255,255,255,0.2)'
+
+        // Layer toggle
+        if (btn.dataset.layer) {
+          const layer = layers[btn.dataset.layer]
+          if (!layer) return
+          const active = map.hasLayer(layer)
+          if (active) { map.removeLayer(layer) } else { layer.addTo(map) }
+          btn.classList.toggle('active', !active)
+          btn.setAttribute('aria-pressed', String(!active))
+        }
+
+        // POI toggle
+        if (btn.dataset.poi) {
+          const active = btn.classList.toggle('active')
+          btn.setAttribute('aria-pressed', String(active))
+          poiToggle(btn.dataset.poi, active)
+        }
+
+        // Compare
+        if (btn.classList.contains('control-compare')) {
+          onCompare()
         }
       })
+
       return container
     },
   })
+
   new Control({ position: 'topright' }).addTo(map)
+
+  return {
+    updateBadge() {
+      const badge = document.getElementById('compare-badge')
+      const count = compareCount()
+      if (badge) {
+        badge.textContent = String(count)
+        badge.classList.toggle('visible', count > 0)
+      }
+    }
+  }
 }

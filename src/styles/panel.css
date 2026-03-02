@@ -11,7 +11,7 @@
   transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 1000;
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--font);
 }
 #detail-panel.open { right: 0; }
 #detail-panel::-webkit-scrollbar { width: 6px; }
@@ -53,6 +53,29 @@
 .price-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; }
 .price-value { font-size: 18px; font-weight: 700; }
 
+/* Nearest station */
+.panel-nearest {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+.station-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 6px;
+  border-radius: 4px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.station-bts { background: #5CBF54; }
+.station-mrt { background: #1E4D8C; }
+.station-arl { background: #E31E24; }
+.station-info { font-size: 13px; color: var(--text-secondary); }
+
 .panel-section { margin-bottom: 18px; }
 .panel-section h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.5; margin: 0 0 10px; }
 .pro-item, .con-item, .activity-item { font-size: 14px; padding: 4px 0; }
@@ -66,6 +89,21 @@
   border-radius: 8px;
   font-size: 14px;
   line-height: 1.5;
+}
+
+.panel-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+.panel-tag {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: rgba(79,195,247,0.12);
+  color: var(--accent);
+  border: 1px solid rgba(79,195,247,0.2);
 }
 
 .panel-item {
