@@ -7,10 +7,11 @@ const RATE_LIMIT_MS = 30 * 1000
 export function initFeedback() {
   const btn = document.createElement('button')
   btn.id = 'feedback-btn'
+  btn.className = 'ctrl-btn'
   btn.setAttribute('aria-label', 'Donner un feedback')
-  btn.textContent = '💬 Feedback'
+  btn.innerHTML = '<span class="ctrl-icon">💬</span><span class="ctrl-label">Support</span>'
   btn.addEventListener('click', () => openModal())
-  document.getElementById('top-bar')!.appendChild(btn)
+  document.getElementById('map-controls-wrapper')!.appendChild(btn)
 }
 
 function isRateLimited(): boolean {

@@ -10,81 +10,76 @@ interface ControlsConfig {
   poiCategories: PoiCategory[]
   onCompare: () => void
   compareCount: () => number
+  onEnterCompareMode: () => void
+  onExitCompareMode: () => void
+  isCompareModeActive: () => boolean
 }
 
 export function initControls(config: ControlsConfig) {
-  const { map, transitLayer, riverLayer, poiToggle, poiCategories, onCompare, compareCount } = config
+  const { map, transitLayer, riverLayer, poiToggle, poiCategories, onCompare, compareCount, onEnterCompareMode, onExitCompareMode, isCompareModeActive } = config
 
-  const Control = L.Control.extend({
-    onAdd() {
-      const container = L.DomUtil.create('div', 'map-controls')
+  const wrapper = document.createElement('div')
+  wrapper.id = 'map-controls-wrapper'
+  document.body.appendChild(wrapper)
 
-      const layerBtns = `
-        <button class="control-btn active" data-layer="transit" title="Transit" aria-pressed="true">🚆</button>
-        <button class="control-btn active" data-layer="river" title="Fleuve" aria-pressed="true">🌊</button>
-      `
-      const poiBtns = poiCategories.map(cat =>
-        `<button class="control-btn control-poi" data-poi="${cat}" title="${poiLabels[cat]}" aria-pressed="false">${poiEmojis[cat]}</button>`
-      ).join('')
+  // Layers button + popover
+  const layersContainer = document.createElement('div')
+  layersContainer.style.position = 'relative'
+  const layersBtn = document.createElement('button')
+  layersBtn.className = 'ctrl-btn'
+  layersBtn.setAttribute('aria-label', 'Filtres')
+  layersBtn.innerHTML = '<span class="ctrl-icon">🗺️</span><span class="ctrl-label">Filtres</span>'
 
-      container.innerHTML = `
-        <button class="control-btn controls-collapse-btn" id="controls-toggle" title="Replier" aria-expanded="true">—</button>
-        <div id="controls-body" class="controls-body">
-          <div class="controls-group">${layerBtns}</div>
-          <div class="controls-sep"></div>
-          <div class="controls-group controls-poi-group">${poiBtns}</div>
-          <div class="controls-sep"></div>
-          <button class="control-btn control-compare" id="btn-compare" title="Comparer" aria-label="Comparer les quartiers">
-            ⚖️<span class="compare-badge" id="compare-badge">0</span>
-          </button>
-        </div>
-      `
+  const popover = document.createElement('div')
+  popover.className = 'layers-popover'
 
-      L.DomEvent.disableClickPropagation(container)
+  const layers: { key: string; emoji: string; label: string; checked: boolean; toggle: (show: boolean) => void }[] = [
+    { key: 'transit', emoji: '🚆', label: 'Transit', checked: true, toggle: (show) => show ? transitLayer.addTo(map) : map.removeLayer(transitLayer) },
+    { key: 'river', emoji: '🌊', label: 'Fleuve', checked: true, toggle: (show) => show ? riverLayer.addTo(map) : map.removeLayer(riverLayer) },
+    ...poiCategories.map(cat => ({
+      key: cat, emoji: poiEmojis[cat], label: poiLabels[cat], checked: false,
+      toggle: (show: boolean) => poiToggle(cat, show),
+    })),
+  ]
 
-      const toggleBtn = container.querySelector('#controls-toggle')!
-      const body = container.querySelector('#controls-body')!
-      toggleBtn.addEventListener('click', (e) => {
-        e.stopPropagation()
-        const collapsed = body.classList.toggle('collapsed')
-        toggleBtn.setAttribute('aria-expanded', String(!collapsed))
-        toggleBtn.textContent = collapsed ? '+' : '—'
-      })
-
-      const layers: Record<string, L.LayerGroup> = { transit: transitLayer, river: riverLayer }
-
-      container.addEventListener('click', e => {
-        const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.control-btn')
-        if (!btn || btn.id === 'controls-toggle') return
-
-        // Layer toggle
-        if (btn.dataset.layer) {
-          const layer = layers[btn.dataset.layer]
-          if (!layer) return
-          const active = map.hasLayer(layer)
-          if (active) { map.removeLayer(layer) } else { layer.addTo(map) }
-          btn.classList.toggle('active', !active)
-          btn.setAttribute('aria-pressed', String(!active))
-        }
-
-        // POI toggle
-        if (btn.dataset.poi) {
-          const active = btn.classList.toggle('active')
-          btn.setAttribute('aria-pressed', String(active))
-          poiToggle(btn.dataset.poi, active)
-        }
-
-        // Compare
-        if (btn.classList.contains('control-compare')) {
-          onCompare()
-        }
-      })
-
-      return container
-    },
+  layers.forEach(l => {
+    const label = document.createElement('label')
+    const cb = document.createElement('input')
+    cb.type = 'checkbox'
+    cb.checked = l.checked
+    cb.addEventListener('change', () => l.toggle(cb.checked))
+    label.appendChild(cb)
+    label.append(` ${l.emoji} ${l.label}`)
+    popover.appendChild(label)
   })
 
-  new Control({ position: 'topleft' }).addTo(map)
+  layersBtn.addEventListener('click', (e) => {
+    e.stopPropagation()
+    popover.classList.toggle('open')
+  })
+  document.addEventListener('click', () => popover.classList.remove('open'))
+  popover.addEventListener('click', (e) => e.stopPropagation())
+
+  layersContainer.appendChild(layersBtn)
+  layersContainer.appendChild(popover)
+
+  // Compare button
+  const compareBtn = document.createElement('button')
+  compareBtn.className = 'ctrl-btn'
+  compareBtn.setAttribute('aria-label', 'Comparer')
+  compareBtn.innerHTML = '<span class="ctrl-icon">⚖️</span><span class="ctrl-label">Comparer</span><span class="compare-badge" id="compare-badge">0</span>'
+  compareBtn.addEventListener('click', () => {
+    if (!isCompareModeActive()) {
+      onEnterCompareMode()
+    } else if (compareCount() >= 2) {
+      onCompare()
+    } else {
+      onExitCompareMode()
+    }
+  })
+
+  wrapper.appendChild(layersContainer)
+  wrapper.appendChild(compareBtn)
 
   return {
     updateBadge() {
@@ -94,6 +89,9 @@ export function initControls(config: ControlsConfig) {
         badge.textContent = String(count)
         badge.classList.toggle('visible', count > 0)
       }
+    },
+    setCompareActive(active: boolean) {
+      compareBtn.classList.toggle('active', active)
     }
   }
 }

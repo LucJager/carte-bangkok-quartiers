@@ -1,0 +1,29 @@
+#category-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 52px;
+  display: flex;
+  z-index: 1001;
+  font-family: var(--font);
+}
+
+.cat-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  opacity: 0.75;
+  transition: all 0.2s;
+}
+.cat-btn:hover { opacity: 0.9; }
+.cat-btn.active { opacity: 1; transform: translateY(-3px); box-shadow: 0 -2px 10px rgba(0,0,0,0.2); }
+.cat-emoji { font-size: 20px; }
+.cat-label { pointer-events: none; }

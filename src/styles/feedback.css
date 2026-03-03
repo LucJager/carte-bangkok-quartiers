@@ -1,25 +1,9 @@
-#feedback-btn {
-  margin-left: auto;
-  padding: 6px 14px;
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(79,195,247,0.3);
-  background: rgba(79,195,247,0.1);
-  color: var(--accent);
-  font-family: var(--font);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-#feedback-btn:hover { background: rgba(79,195,247,0.2); }
-
 #feedback-overlay {
   position: fixed;
   inset: 0;
   z-index: 2000;
-  background: rgba(0,0,0,0.6);
+  background: var(--overlay-bg);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -28,13 +12,14 @@
 
 .feedback-modal {
   position: relative;
-  background: var(--bg-card);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
   color: var(--text-primary);
   border-radius: var(--radius-md);
   padding: 28px 24px;
   width: 90%;
   max-width: 400px;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  box-shadow: var(--shadow);
   animation: fbSlideUp 0.3s ease;
 }
 .feedback-modal h3 { margin: 0 0 18px; font-size: 18px; font-weight: 700; }
@@ -43,7 +28,7 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  background: rgba(255,255,255,0.1);
+  background: var(--border-medium);
   border: none;
   color: var(--text-primary);
   font-size: 20px;
@@ -55,7 +40,7 @@
   align-items: center;
   justify-content: center;
 }
-.feedback-close:hover { background: rgba(255,255,255,0.2); }
+.feedback-close:hover { background: var(--border-strong); }
 
 .feedback-label {
   display: block;
@@ -71,7 +56,7 @@
   margin-top: 6px;
   background: var(--bg-hover);
   color: var(--text-primary);
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid var(--border-medium);
   border-radius: var(--radius-sm);
   padding: 8px 10px;
   font-family: var(--font);
@@ -126,7 +111,6 @@
 @keyframes fbSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (max-width: 768px) {
-  #feedback-btn { padding: 4px 10px; font-size: 12px; }
   #feedback-overlay { align-items: flex-end; }
   .feedback-modal {
     width: 100%;

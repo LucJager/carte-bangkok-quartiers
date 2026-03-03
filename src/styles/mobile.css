@@ -1,7 +1,4 @@
 @media (max-width: 768px) {
-  #top-bar { height: 40px; padding: 0 14px; }
-  #top-bar h1 { font-size: 13px; }
-
   /* Panel bottom sheet */
   #detail-panel {
     top: auto !important;
@@ -10,11 +7,12 @@
     left: 0;
     width: 100% !important;
     height: auto;
-    max-height: 65vh;
+    max-height: 60vh;
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     transition: bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    padding-bottom: 60px;
   }
-  #detail-panel.open { bottom: 0; right: 0 !important; }
+  #detail-panel.open { bottom: 52px; right: 0 !important; }
   #detail-panel::before {
     content: '';
     display: block;
@@ -25,20 +23,22 @@
     margin: 0 auto 16px;
   }
 
-  /* Legend collapsable */
-  #legend { bottom: 12px; left: 12px; }
-  #legend.expanded #legend-list { max-height: 300px; }
+  /* Category bar responsive */
+  #category-bar { height: 46px; }
+  .cat-label { display: none; }
+  .cat-emoji { font-size: 22px; }
 
   /* Labels */
-  .district-label { font-size: 9px; }
+  .district-label { font-size: 12px; }
 
-  /* Touch friendly */
-  .control-btn { width: 38px; height: 38px; }
-  .legend-item { padding: 8px 10px; min-height: 40px; }
+  /* Leaflet controls above category bar */
+  .leaflet-bottom.leaflet-right { bottom: 52px; }
 
-  /* Search responsive */
-  #search-wrapper { margin-left: 8px; }
-  #search-input { height: 28px; font-size: 12px; }
+  /* Controls wrapper */
+  #map-controls-wrapper { top: 8px !important; right: 8px !important; gap: 4px !important; }
+  .ctrl-btn { width: 44px; padding: 6px 2px 4px; }
+  .ctrl-icon { font-size: 16px; }
+  .ctrl-label { font-size: 7px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
