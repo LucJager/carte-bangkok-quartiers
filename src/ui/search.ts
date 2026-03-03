@@ -47,6 +47,12 @@ export function initSearch(map: L.Map, callbacks: SearchCallbacks) {
     filterToggle.textContent = expanded ? '▾' : '▴'
   })
 
+  input.addEventListener('focus', () => {
+    pillsContainer.classList.remove('collapsed')
+    filterToggle.setAttribute('aria-expanded', 'true')
+    filterToggle.textContent = '▴'
+  })
+
   const activeFilters = { tags: new Set<TagFilter>(), budgets: new Set<BudgetFilter>() }
 
   // Search input

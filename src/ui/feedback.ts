@@ -2,15 +2,15 @@ import { supabase } from '../lib/supabase'
 import { districts } from '../data/districts'
 
 const RATE_LIMIT_KEY = 'feedback_last'
-const RATE_LIMIT_MS = 5 * 60 * 1000
+const RATE_LIMIT_MS = 30 * 1000
 
 export function initFeedback() {
   const btn = document.createElement('button')
   btn.id = 'feedback-btn'
   btn.setAttribute('aria-label', 'Donner un feedback')
-  btn.textContent = '💬'
-  btn.addEventListener('click', openModal)
-  document.body.appendChild(btn)
+  btn.textContent = '💬 Feedback'
+  btn.addEventListener('click', () => openModal())
+  document.getElementById('top-bar')!.appendChild(btn)
 }
 
 function isRateLimited(): boolean {
@@ -18,7 +18,9 @@ function isRateLimited(): boolean {
   return !!last && Date.now() - parseInt(last) < RATE_LIMIT_MS
 }
 
-function openModal() {
+export function openFeedbackFor(districtId: string) { openModal(districtId) }
+
+function openModal(districtId?: string) {
   if (document.getElementById('feedback-overlay')) return
 
   const overlay = document.createElement('div')
@@ -47,6 +49,8 @@ function openModal() {
     </div>`
 
   document.body.appendChild(overlay)
+
+  if (districtId) (overlay.querySelector('#fb-district') as HTMLSelectElement).value = districtId
 
   let rating = 0
   const stars = overlay.querySelector('#fb-stars')!

@@ -84,7 +84,7 @@ export function initControls(config: ControlsConfig) {
     },
   })
 
-  new Control({ position: 'topright' }).addTo(map)
+  new Control({ position: 'topleft' }).addTo(map)
 
   return {
     updateBadge() {

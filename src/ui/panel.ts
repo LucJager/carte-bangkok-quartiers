@@ -1,6 +1,7 @@
 import type { District } from '../types'
 import { findNearestStation } from '../utils/geo'
 import { transitLines } from '../data/transit-lines'
+import { openFeedbackFor } from './feedback'
 
 let panel: HTMLDivElement
 
@@ -55,7 +56,9 @@ export function showPanel(d: District) {
       <strong>Idéal pour :</strong> ${d.bestFor}
     </div>
     ${d.tags.length ? `<div class="panel-tags panel-item" style="animation-delay:0.45s">${d.tags.map(t => `<span class="panel-tag">${t}</span>`).join('')}</div>` : ''}
+    <button class="panel-feedback-btn panel-item" style="animation-delay:0.5s">💬 Donner un avis</button>
   `
+  content.querySelector('.panel-feedback-btn')!.addEventListener('click', () => openFeedbackFor(d.id))
   panel.classList.add('open')
 }
 
