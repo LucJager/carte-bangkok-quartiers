@@ -5,7 +5,24 @@
   position: relative;
 }
 
-.search-bar { position: relative; }
+.search-bar { position: relative; display: flex; align-items: center; gap: 6px; }
+
+.filter-toggle {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.08);
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.filter-toggle:hover { border-color: var(--accent); color: var(--accent); }
 
 #search-input {
   width: 100%;
@@ -78,7 +95,11 @@
   padding: 8px;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(255,255,255,0.06);
+  transition: max-height 0.3s ease, opacity 0.2s ease, padding 0.3s ease;
+  max-height: 200px;
+  overflow: hidden;
 }
+.filter-pills.collapsed { max-height: 0; opacity: 0; padding: 0 8px; pointer-events: none; border-color: transparent; }
 .pills-row { display: flex; flex-wrap: wrap; gap: 4px; }
 
 .pill {

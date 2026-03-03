@@ -22,9 +22,10 @@ export function initSearch(map: L.Map, callbacks: SearchCallbacks) {
   wrapper.innerHTML = `
     <div class="search-bar">
       <input id="search-input" type="text" placeholder="Rechercher un quartier ou lieu..." autocomplete="off" aria-label="Rechercher" />
+      <button id="filter-toggle" class="filter-toggle" aria-expanded="false" aria-label="Filtres" title="Filtres">▾</button>
       <div id="search-dropdown" class="search-dropdown" role="listbox" aria-label="Résultats"></div>
     </div>
-    <div id="filter-pills" class="filter-pills" role="group" aria-label="Filtres">
+    <div id="filter-pills" class="filter-pills collapsed" role="group" aria-label="Filtres">
       <div class="pills-row">
         ${BUDGETS.map(b => `<button class="pill pill-budget" data-budget="${b}" aria-pressed="false">${b}</button>`).join('')}
       </div>
@@ -38,6 +39,13 @@ export function initSearch(map: L.Map, callbacks: SearchCallbacks) {
   const input = document.getElementById('search-input') as HTMLInputElement
   const dropdown = document.getElementById('search-dropdown')!
   const pillsContainer = document.getElementById('filter-pills')!
+  const filterToggle = document.getElementById('filter-toggle')!
+
+  filterToggle.addEventListener('click', () => {
+    const expanded = pillsContainer.classList.toggle('collapsed')
+    filterToggle.setAttribute('aria-expanded', String(!expanded))
+    filterToggle.textContent = expanded ? '▾' : '▴'
+  })
 
   const activeFilters = { tags: new Set<TagFilter>(), budgets: new Set<BudgetFilter>() }
 

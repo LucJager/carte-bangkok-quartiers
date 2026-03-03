@@ -26,15 +26,8 @@
   }
 
   /* Legend collapsable */
-  #legend {
-    bottom: 12px;
-    left: 12px;
-    max-height: 48px;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-  }
-  #legend.expanded { max-height: 300px; overflow-y: auto; }
-  #legend-toggle { display: block; }
+  #legend { bottom: 12px; left: 12px; }
+  #legend.expanded #legend-list { max-height: 300px; }
 
   /* Labels */
   .district-label { font-size: 9px; }

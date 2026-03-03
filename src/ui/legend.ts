@@ -17,7 +17,7 @@ export function initLegend(onSelect: (id: string) => void) {
     `</div>`
   document.body.appendChild(legend)
 
-  // Toggle mobile collapse
+  // Toggle collapse (desktop + mobile)
   const toggle = legend.querySelector('#legend-toggle')!
   toggle.addEventListener('click', (e) => {
     e.stopPropagation()

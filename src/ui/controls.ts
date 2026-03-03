@@ -28,22 +28,34 @@ export function initControls(config: ControlsConfig) {
       ).join('')
 
       container.innerHTML = `
-        <div class="controls-group">${layerBtns}</div>
-        <div class="controls-sep"></div>
-        <div class="controls-group controls-poi-group">${poiBtns}</div>
-        <div class="controls-sep"></div>
-        <button class="control-btn control-compare" id="btn-compare" title="Comparer" aria-label="Comparer les quartiers">
-          ⚖️<span class="compare-badge" id="compare-badge">0</span>
-        </button>
+        <button class="control-btn controls-collapse-btn" id="controls-toggle" title="Replier" aria-expanded="true">—</button>
+        <div id="controls-body" class="controls-body">
+          <div class="controls-group">${layerBtns}</div>
+          <div class="controls-sep"></div>
+          <div class="controls-group controls-poi-group">${poiBtns}</div>
+          <div class="controls-sep"></div>
+          <button class="control-btn control-compare" id="btn-compare" title="Comparer" aria-label="Comparer les quartiers">
+            ⚖️<span class="compare-badge" id="compare-badge">0</span>
+          </button>
+        </div>
       `
 
       L.DomEvent.disableClickPropagation(container)
+
+      const toggleBtn = container.querySelector('#controls-toggle')!
+      const body = container.querySelector('#controls-body')!
+      toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation()
+        const collapsed = body.classList.toggle('collapsed')
+        toggleBtn.setAttribute('aria-expanded', String(!collapsed))
+        toggleBtn.textContent = collapsed ? '+' : '—'
+      })
 
       const layers: Record<string, L.LayerGroup> = { transit: transitLayer, river: riverLayer }
 
       container.addEventListener('click', e => {
         const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.control-btn')
-        if (!btn) return
+        if (!btn || btn.id === 'controls-toggle') return
 
         // Layer toggle
         if (btn.dataset.layer) {

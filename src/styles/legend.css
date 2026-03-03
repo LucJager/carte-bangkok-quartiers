@@ -8,7 +8,6 @@
   padding: 16px;
   z-index: 1000;
   max-height: 400px;
-  overflow-y: auto;
   font-family: var(--font);
   min-width: 180px;
 }
@@ -16,7 +15,7 @@
 #legend::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 2px; }
 
 #legend-toggle {
-  display: none;
+  display: block;
   width: 100%;
   text-align: left;
   padding: 4px 0;
@@ -28,6 +27,14 @@
   font-weight: 600;
   cursor: pointer;
 }
+
+#legend-list {
+  transition: max-height 0.3s ease, opacity 0.2s ease;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+#legend.expanded #legend-list { max-height: 500px; opacity: 1; overflow-y: auto; }
 
 .legend-item {
   display: flex;

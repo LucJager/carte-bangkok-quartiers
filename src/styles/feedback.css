@@ -68,7 +68,8 @@
   margin-bottom: 14px;
 }
 .feedback-label select,
-.feedback-label textarea {
+.feedback-label textarea,
+.feedback-label input {
   display: block;
   width: 100%;
   margin-top: 6px;
@@ -82,7 +83,9 @@
   resize: vertical;
 }
 .feedback-label select:focus,
-.feedback-label textarea:focus { outline: none; border-color: var(--accent); }
+.feedback-label textarea:focus,
+.feedback-label input:focus { outline: none; border-color: var(--accent); }
+.feedback-label input { resize: none; }
 
 .feedback-stars { margin-top: 6px; display: flex; gap: 4px; }
 .feedback-stars span {

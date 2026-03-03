@@ -36,6 +36,9 @@ function openModal() {
       <div class="feedback-label">Note
         <div id="fb-stars" class="feedback-stars">${[1,2,3,4,5].map(n => `<span data-star="${n}">☆</span>`).join('')}</div>
       </div>
+      <label class="feedback-label">Email (optionnel)
+        <input id="fb-email" type="email" placeholder="votre@email.com" />
+      </label>
       <label class="feedback-label">Message
         <textarea id="fb-msg" maxlength="500" rows="4" placeholder="Votre feedback..."></textarea>
         <span id="fb-count" class="feedback-count">0 / 500</span>
@@ -70,10 +73,12 @@ function openModal() {
 
     send.disabled = true
     send.textContent = '...'
+    const email = (overlay.querySelector('#fb-email') as HTMLInputElement).value.trim()
     const { error } = await supabase.from('feedback').insert({
       district_id: (overlay.querySelector('#fb-district') as HTMLSelectElement).value || null,
       rating: rating || null,
       message: text,
+      email: email || null,
     })
 
     if (!document.body.contains(overlay)) return
