@@ -3,6 +3,7 @@ import type { TagFilter, BudgetFilter } from '../types'
 import { districts } from '../data/districts'
 import { fuzzyMatch } from '../utils/fuzzy'
 import { pointInPolygon } from '../utils/geo'
+import { escapeHtml } from '../utils/sanitize'
 
 const TAGS: TagFilter[] = ['nightlife', 'expat-friendly', 'culture', 'budget-friendly', 'foodie', 'hipster', 'family']
 const BUDGETS: BudgetFilter[] = ['฿', '฿฿', '฿฿฿', '฿฿฿฿']
@@ -72,7 +73,7 @@ export function initSearch(map: L.Map, callbacks: SearchCallbacks) {
       const data = await res.json() as Array<{ display_name: string, lat: string, lon: string }>
       if (!data.length) return
       const geoHtml = data.map((r: { display_name: string, lat: string, lon: string }) =>
-        `<div class="dropdown-item dropdown-geo" data-lat="${r.lat}" data-lng="${r.lon}" role="option"><span class="dropdown-pin">📍</span>${r.display_name.split(',').slice(0, 2).join(',')}</div>`
+        `<div class="dropdown-item dropdown-geo" data-lat="${escapeHtml(r.lat)}" data-lng="${escapeHtml(r.lon)}" role="option"><span class="dropdown-pin">📍</span>${escapeHtml(r.display_name.split(',').slice(0, 2).join(','))}</div>`
       ).join('')
       if (districtCount > 0) {
         dropdown.innerHTML = existingHtml + '<div class="dropdown-sep"></div>' + geoHtml

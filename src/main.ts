@@ -7,6 +7,7 @@ import './styles/legend.css'
 import './styles/mobile.css'
 import './styles/search.css'
 import './styles/compare.css'
+import './styles/feedback.css'
 
 import { districts } from './data/districts'
 import { initDistrictsLayer } from './layers/districts'
@@ -17,6 +18,7 @@ import { initPanel, hidePanel } from './ui/panel'
 import { initLegend, setActive } from './ui/legend'
 import { initControls } from './ui/controls'
 import { initSearch } from './ui/search'
+import { initFeedback } from './ui/feedback'
 import { initCompare, addToCompare, showCompare, hideCompare, clearCompare, getCompareCount, getCompareIds, isCompareOpen } from './ui/compare'
 
 const map = L.map('map', {
@@ -83,6 +85,9 @@ initSearch(map, {
 
 // Legend
 initLegend((id) => { select(id); setActive(id) })
+
+// Feedback
+initFeedback()
 
 // Panel close
 document.getElementById('panel-close')!.addEventListener('click', () => {
