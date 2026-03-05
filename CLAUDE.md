@@ -16,7 +16,7 @@ Pas de linter ni de tests configurés.
 
 - **Vite 7** + **TypeScript 5.9** (strict mode, ESNext modules)
 - **Leaflet 1.9** pour la cartographie interactive
-- **Supabase** pour le stockage des feedbacks
+- **Vercel Serverless Function** (`api/feedback.ts`) pour envoyer les feedbacks via Telegram
 - **DOM vanilla** — pas de framework (React, Vue, etc.)
 - **CSS vanilla** — pas de Tailwind ni preprocesseur
 - Déployé sur **Vercel** avec headers de sécurité stricts (CSP, etc.)
@@ -35,11 +35,10 @@ src/
 │   ├── controls.ts      # Boutons flottants (layers toggle, compare mode)
 │   ├── search.ts        # Fuzzy search districts + geocoding Nominatim
 │   ├── compare.ts       # Comparaison jusqu'à 3 districts
-│   ├── feedback.ts      # Modal feedback → Supabase (rate limited)
+│   ├── feedback.ts      # Modal feedback → Vercel Function → Telegram (rate limited)
 │   ├── theme.ts         # Toggle dark/light (localStorage)
 │   └── category-bar.ts  # Filtres par tags/catégories
 ├── utils/               # geo (haversine, point-in-polygon), fuzzy match, sanitize XSS
-├── lib/                 # Client Supabase
 └── styles/              # CSS modulaires (main, map, panel, search, compare, feedback, mobile)
 ```
 
@@ -47,7 +46,7 @@ src/
 
 - **Pas de state global** : chaque module UI gère son propre état, communication via custom events DOM (`theme-change`, etc.)
 - **Sécurité XSS** : tout contenu dynamique passe par `escapeHtml()` de `src/utils/sanitize.ts`
-- **Variables d'environnement** : `VITE_SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY` (voir `.env.example`)
+- **Variables d'environnement** : `TELEGRAM_BOT_TOKEN` et `TELEGRAM_CHAT_ID` (côté serveur, voir `.env.example`)
 - **Base relative** : Vite configuré avec `base: './'` pour compatibilité Vercel
 - **Responsive** : breakpoint mobile à 768px dans `src/styles/mobile.css`
 - **Langue de l'UI** : français (labels, descriptions, textes)

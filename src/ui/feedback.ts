@@ -1,4 +1,3 @@
-import { supabase } from '../lib/supabase'
 import { districts } from '../data/districts'
 
 const RATE_LIMIT_KEY = 'feedback_last'
@@ -79,15 +78,19 @@ function openModal(districtId?: string) {
     send.disabled = true
     send.textContent = '...'
     const email = (overlay.querySelector('#fb-email') as HTMLInputElement).value.trim()
-    const { error } = await supabase.from('feedback').insert({
-      district_id: (overlay.querySelector('#fb-district') as HTMLSelectElement).value || null,
-      rating: rating || null,
-      message: text,
-      email: email || null,
+    const res = await fetch('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        district_id: (overlay.querySelector('#fb-district') as HTMLSelectElement).value || null,
+        rating: rating || null,
+        message: text,
+        email: email || null,
+      }),
     })
 
     if (!document.body.contains(overlay)) return
-    if (error) { send.disabled = false; send.textContent = 'Envoyer'; showToast(overlay, 'Erreur, réessayez.'); return }
+    if (!res.ok) { send.disabled = false; send.textContent = 'Envoyer'; showToast(overlay, 'Erreur, réessayez.'); return }
     localStorage.setItem(RATE_LIMIT_KEY, String(Date.now()))
     showToast(overlay, 'Merci !')
     setTimeout(close, 1500)
